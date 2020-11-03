@@ -1,16 +1,25 @@
 on: 
   schedule:
-    - cron: 0 7 * * *
+    - cron: 38 2 * * *
 
 jobs:
   sync-with-upstream:
     runs-on: ubuntu-latest
     name: Fork Sync With Upstream
     steps:
-    - id: step-1
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        ref: master
+    
+    - name: merge
       uses: aormsby/Fork-Sync-With-Upstream-action@v2.1
       with:
         upstream_repository: statsbomb/open-data
         upstream_branch: master
         target_branch: master
-
+    
+    - name: output
+      if: steps.sync.outputs.has_new_commits
+      run: echo "There were new commits."
+      
